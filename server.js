@@ -73,7 +73,19 @@ io.on("connection", (socket) => {
 
     socket.on("disconnect", () => {
         console.log("User disconnected");
+
+        // Find the room where this user was present
+        for (const room in rooms) {
+            rooms[room].users = rooms[room].users.filter(user => user !== socket.username);
+
+            // If no users left, delete the room
+            if (rooms[room].users.length === 0) {
+                delete rooms[room];
+                console.log(`Room ${room} deleted as all users left.`);
+            }
+        }
     });
+
 });
 
 // Use process.env.PORT for deployment
